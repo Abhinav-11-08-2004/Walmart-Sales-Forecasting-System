@@ -1,0 +1,184 @@
+{
+  "name": "Lasso",
+  "features": [
+    "week_of_year",
+    "month",
+    "quarter",
+    "year",
+    "trend",
+    "is_holiday",
+    "is_thanksgiving_week",
+    "is_christmas_week",
+    "is_superbowl_week",
+    "is_q4",
+    "is_december",
+    "is_january",
+    "lag_1",
+    "lag_2",
+    "lag_4",
+    "lag_8",
+    "lag_52",
+    "rolling_mean_4",
+    "rolling_mean_12",
+    "rolling_std_4",
+    "yoy_growth",
+    "week_sin",
+    "week_cos",
+    "temperature",
+    "fuel_price",
+    "cpi",
+    "unemployment",
+    "total_markdown"
+  ],
+  "metrics": {
+    "MAE": 166359.8666,
+    "RMSE": 206592.3115,
+    "R2": 0.9803,
+    "MAPE": 0.3576
+  },
+  "all_results": {
+    "Linear Regression": {
+      "MAE": 171367.8162,
+      "RMSE": 212461.0122,
+      "R2": 0.9792,
+      "MAPE": 0.3684
+    },
+    "Ridge": {
+      "MAE": 171020.0781,
+      "RMSE": 209345.4269,
+      "R2": 0.9798,
+      "MAPE": 0.367
+    },
+    "Lasso": {
+      "MAE": 166359.8666,
+      "RMSE": 206592.3115,
+      "R2": 0.9803,
+      "MAPE": 0.3576
+    },
+    "ElasticNet": {
+      "MAE": 174305.0397,
+      "RMSE": 212809.9896,
+      "R2": 0.9791,
+      "MAPE": 0.3737
+    }
+  },
+  "feature_importance": [
+    [
+      "lag_52",
+      50.26
+    ],
+    [
+      "yoy_growth",
+      19.55
+    ],
+    [
+      "month",
+      6.3
+    ],
+    [
+      "year",
+      3.51
+    ],
+    [
+      "cpi",
+      3.1
+    ],
+    [
+      "week_sin",
+      2.18
+    ],
+    [
+      "trend",
+      2.04
+    ],
+    [
+      "week_of_year",
+      1.64
+    ],
+    [
+      "temperature",
+      1.59
+    ],
+    [
+      "is_christmas_week",
+      1.59
+    ],
+    [
+      "is_thanksgiving_week",
+      1.22
+    ],
+    [
+      "quarter",
+      1.2
+    ],
+    [
+      "unemployment",
+      1.17
+    ],
+    [
+      "rolling_mean_12",
+      0.85
+    ],
+    [
+      "is_q4",
+      0.62
+    ],
+    [
+      "lag_4",
+      0.5
+    ],
+    [
+      "is_december",
+      0.47
+    ],
+    [
+      "lag_8",
+      0.46
+    ],
+    [
+      "lag_1",
+      0.39
+    ],
+    [
+      "total_markdown",
+      0.35
+    ],
+    [
+      "rolling_mean_4",
+      0.21
+    ],
+    [
+      "week_cos",
+      0.17
+    ],
+    [
+      "is_superbowl_week",
+      0.16
+    ],
+    [
+      "fuel_price",
+      0.16
+    ],
+    [
+      "is_holiday",
+      0.13
+    ],
+    [
+      "lag_2",
+      0.13
+    ],
+    [
+      "is_january",
+      0.04
+    ],
+    [
+      "rolling_std_4",
+      0.0
+    ]
+  ],
+  "version": "20260609_130301",
+  "trained_on": "2026-06-09 13:03:01.950996",
+  "n_train": 78,
+  "n_test": 13,
+  "dataset": "Walmart Sales Forecast"
+}

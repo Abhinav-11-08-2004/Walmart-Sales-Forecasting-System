@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Predict Sales</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<header>
+  <div class="header-content">
+    <div>
+      <h1>Walmart Sales Forecasting</h1>
+      <p>Powered by {{ model_name }}</p>
+    </div>
+  </div>
+  <nav>
+    <a href="/">Dashboard</a>
+    <a href="/predict" class="active">Predict</a>
+  </nav>
+</header>
+
+<div class="container" style="max-width:600px">
+
+  {% if result %}
+  <div class="result-card">
+    <div class="r-label">Predicted Total Sales — Week {{ result.week }}, {{ result.year }} (~{{ result.date }})</div>
+    <div class="r-big">${{ "{:,.0f}".format(result.predicted_sales) }}</div>
+    <div class="r-range">
+      Confidence Interval: ${{ "{:,.0f}".format(result.lower_bound) }} – ${{ "{:,.0f}".format(result.upper_bound) }}
+    </div>
+    <div class="r-model">Model: {{ model_name }} &nbsp;|&nbsp; Confidence: {{ result.confidence_pct }}%</div>
+  </div>
+  {% endif %}
+
+  <div class="card">
+    <h2>Predict Weekly Sales</h2>
+    <p class="muted">Enter a year and ISO week number (1–52) to predict total Walmart sales across all 45 stores.</p>
+    {% if errors %}
+    <div class="error-box">
+      {% for e in errors %}<p>&#9888; {{ e }}</p>{% endfor %}
+    </div>
+    {% endif %}
+    <form method="POST">
+      <div class="form-group">
+        <label>Year</label>
+        <input type="number" name="year" min="2010" max="2030"
+               value="{{ year_val }}" placeholder="e.g. 2013" required>
+      </div>
+      <div class="form-group">
+        <label>Week Number (1 – 52)</label>
+        <input type="number" name="week" min="1" max="52"
+               value="{{ week_val }}" placeholder="e.g. 47" required>
+      </div>
+      <button type="submit">Predict Sales</button>
+    </form>
+    <p class="muted" style="margin-top:14px">
+      Confidence interval based on model MAPE (+-{{ "%.1f"|format(mape) }}%).
+    </p>
+  </div>
+</div>
+
+<footer>Walmart Sales Forecasting System &middot; scikit-learn + Flask</footer>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Walmart Sales Forecasting Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<header>
+  <div class="header-content">
+    <div>
+      <h1>Walmart Sales Forecasting Dashboard</h1>
+      <p>45 Stores &middot; Weekly Data &middot; Best Model: <strong>{{ model_name }}</strong></p>
+    </div>
+    <span class="badge">v{{ version }}</span>
+  </div>
+  <nav>
+    <a href="/" class="active">Dashboard</a>
+    <a href="/predict">Predict</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <!-- Metrics -->
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="label">MAE</div>
+      <div class="value">${{ "{:,.0f}".format(metrics.MAE) }}</div>
+      <div class="sub">mean absolute error</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">RMSE</div>
+      <div class="value">${{ "{:,.0f}".format(metrics.get('RMSE', 0)) }}</div>
+      <div class="sub">root mean sq error</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">R&sup2; Score</div>
+      <div class="value">{{ "%.3f"|format(metrics.R2) }}</div>
+      <div class="sub">variance explained</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">MAPE</div>
+      <div class="value">{{ "%.1f"|format(metrics.MAPE) }}%</div>
+      <div class="sub">mean abs % error</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">Model</div>
+      <div class="value" style="font-size:1.1rem">{{ model_name }}</div>
+      <div class="sub">best on test set</div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="card">
+    <h2>Historical Weekly Sales + 13-Week Forecast</h2>
+    <canvas id="salesChart" height="80"></canvas>
+  </div>
+
+  <!-- Bottom Row -->
+  <div class="two-col">
+    <div class="card">
+      <h2>13-Week Forecast</h2>
+      <table class="ft">
+        <thead><tr><th>Date</th><th>Predicted Sales</th></tr></thead>
+        <tbody>
+          {% for date, val in forecast_rows %}
+          <tr><td>{{ date }}</td><td><strong>${{ "{:,.0f}".format(val) }}</strong></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Feature Importance</h2>
+      {% if fi_data %}
+        {% for feat, imp in fi_data %}
+        <div class="fi-row">
+          <span class="fi-label">{{ feat }}</span>
+          <div class="fi-track"><div class="fi-fill" style="width:{{ [imp*2,100]|min }}%"></div></div>
+          <span class="fi-pct">{{ imp }}%</span>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p class="muted">Not available for {{ model_name }}.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="cta">
+    <a href="/predict">Make a Custom Prediction &rarr;</a>
+  </div>
+</div>
+
+<footer>Walmart Sales Forecasting &middot; scikit-learn + Flask</footer>
+
+<script>
+const allLabels = [...{{ hist_labels|safe }}, ...{{ fc_labels|safe }}];
+const histData  = [...{{ hist_values|safe }}, ...Array({{ fc_labels|safe }}.length).fill(null)];
+const fcData    = [...Array({{ hist_labels|safe }}.length).fill(null), ...{{ fc_values|safe }}];
+
+new Chart(document.getElementById("salesChart"), {
+  type: "line",
+  data: {
+    labels: allLabels,
+    datasets: [
+      { label: "Historical", data: histData, borderColor: "#2b6cb0",
+        backgroundColor: "rgba(43,108,176,0.07)", borderWidth: 2, pointRadius: 1,
+        tension: 0.3, fill: true },
+      { label: "Forecast", data: fcData, borderColor: "#e53e3e",
+        backgroundColor: "rgba(229,62,62,0.07)", borderWidth: 2, borderDash: [6,4],
+        pointRadius: 4, tension: 0.3, fill: true }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: "top" },
+               tooltip: { callbacks: { label: c => ` $${c.parsed.y?.toLocaleString() ?? "N/A"}` } } },
+    scales: {
+      y: { ticks: { callback: v => "$" + (v/1000000).toFixed(1) + "M" }, grid: { color: "#f0f4f8" } },
+      x: { grid: { display: false }, ticks: { maxTicksLimit: 14 } }
+    }
+  }
+});
+</script>
+</body>
+</html>
